@@ -87,8 +87,8 @@ body.pdf-export .page{filter:grayscale(100%)}
 <div class="ttl">HOJA DE ADMISIÓN DE PACIENTES</div>
 <div class="g">
  <div class="f"><label>N° de admisión:</label><input id="s_adm"></div>
- <div class="f"><label>Fecha admisión:</label><input id="fecha_admision" type="date" readonly></div>
- <div class="f"><label>Hora admisión:</label><input id="hora_admision" type="time" readonly></div>
+ <div class="f"><label>Fecha admisión:</label><input id="fecha_admision" type="date"></div>
+ <div class="f"><label>Hora admisión:</label><input id="hora_admision" type="time"></div>
 </div>
 
 <div class="sec">DATOS GENERALES DEL PACIENTE</div>
@@ -162,13 +162,6 @@ document.querySelectorAll('.pad').forEach(function(p){
 });
 var TIPOS={CC:'CEDULA DE CIUDADANIA',TI:'TARJETA DE IDENTIDAD',RC:'REGISTRO CIVIL',CE:'CEDULA DE EXTRANJERIA',PA:'PASAPORTE',PT:'PERMISO POR PROTECCION TEMPORAL'};
 function $(i){return document.getElementById(i)}
-function actualizarFechaHora(){
- var ahora=new Date();
- $('fecha_admision').value=[ahora.getFullYear(),String(ahora.getMonth()+1).padStart(2,'0'),String(ahora.getDate()).padStart(2,'0')].join('-');
- $('hora_admision').value=[String(ahora.getHours()).padStart(2,'0'),String(ahora.getMinutes()).padStart(2,'0')].join(':');
-}
-actualizarFechaHora();
-setInterval(actualizarFechaHora,30000);
 function sync(){
  var m=[['s_nom','t_nom'],['s_doc','t_doc'],['s_doc','t_cc'],['s_adm','t_adm']];
  m.forEach(function(p){var t=$(p[1]);if(!t.dataset.m)t.value=$(p[0]).value});
@@ -209,8 +202,7 @@ async function descargarPDF(){
  }
 }
 function limpiar(){if(!confirm('¿Borrar todo lo escrito?'))return;
- document.querySelectorAll('input:not([readonly]),select').forEach(function(i){i.value=''});
- actualizarFechaHora();
+ document.querySelectorAll('input,select').forEach(function(i){i.value=''});
  document.querySelectorAll('.clr').forEach(function(b){b.click()});
  document.querySelectorAll('.auto').forEach(function(t){t.dataset.m=''});sync()}
 </script>

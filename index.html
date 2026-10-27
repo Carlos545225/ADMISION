@@ -6,7 +6,7 @@
 :root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:#e9ecef;font:12px/1.35 Arial,Helvetica,sans-serif;color:#111}
-.bar{position:sticky;top:0;background:#1d3b6e;color:#fff;padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:5}
+.bar{position:sticky;top:0;background:#1d3b6e;color:#fff;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;z-index:5}
 .bar button{font:inherit;padding:6px 12px;border:0;border-radius:4px;background:#fff;color:#1d3b6e;cursor:pointer}
 .wrap{overflow-x:auto;padding:12px}
 .page{width:780px;margin:0 auto;background:#fff;padding:22px 28px;box-shadow:0 1px 4px #0003}
@@ -26,16 +26,26 @@ body{margin:0;background:#e9ecef;font:12px/1.35 Arial,Helvetica,sans-serif;color
 .f label{font-weight:bold;white-space:nowrap}
 input,select{font:inherit;border:0;border-bottom:1px solid #8aa;background:transparent;width:100%;min-width:0;padding:1px 2px;color:#111}
 input:focus,select:focus{outline:2px solid #2b6cb0;background:#f3f8ff}
-.pad canvas{display:block;width:100%;height:60px;border-bottom:1px solid #111;touch-action:none;background:#fff}
+.signature-box{display:flex;width:100%;height:60px;align-items:flex-end;justify-content:center;overflow:hidden;border-bottom:1px solid #111;background:#fff}
+.signature-text{max-width:100%;overflow:hidden;color:#111;font-size:18px;line-height:1.15;text-align:center;text-overflow:ellipsis;white-space:nowrap}
+.signature-text[data-font="classic"]{font-family:"Segoe Script","Brush Script MT",cursive}
+.signature-text[data-font="elegant"]{font-family:"Lucida Handwriting","Segoe Script",cursive}
+.signature-text[data-font="casual"]{font-family:"Brush Script MT","Lucida Handwriting",cursive}
+.signature-text.doctor-signature{font-family:"Lucida Handwriting","Segoe Script",cursive;font-style:italic;font-weight:bold}
+.signature-controls{display:grid;grid-template-columns:1fr auto;gap:3px 6px;align-items:center;padding-top:3px}
+.signature-controls .signature-name{grid-column:1/-1}
+.bar label{font-size:11px;font-weight:bold}
+.bar .signature-font{width:auto;max-width:170px;min-height:32px;padding:6px 30px 6px 10px;border:1px solid #d5deeb;border-radius:6px;background:#fff;color:#1d3b6e;font-weight:bold;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231d3b6e' d='M1 1l5 5 5-5' stroke='%231d3b6e' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;box-shadow:0 1px 2px #0002;transition:border-color .15s,box-shadow .15s}
+.bar .signature-font:hover{border-color:#fff;box-shadow:0 0 0 2px #ffffff30}
+.bar .signature-font:focus{outline:2px solid #fff;outline-offset:2px;background-color:#fff}
 .pad .cap{font-size:11px;padding-top:2px}
-.clr{font-size:10px;border:0;background:none;color:#2b6cb0;cursor:pointer;padding:0}
 .cut{border-top:1.5px dashed #444;margin:16px 0 8px}
 .cmp p{margin:8px 0}
 .cmp input.i{display:inline-block;width:auto}
 .huella{width:95px;height:85px;border:1px solid #111}
 .foot{font-size:12px;margin-top:12px}
 body.pdf-export{width:auto;background:#fff;font-size:12px;line-height:1.3}
-body.pdf-export .bar,body.pdf-export .clr{display:none}
+body.pdf-export .bar{display:none}
 body.pdf-export .wrap{padding:0;overflow:visible}
 body.pdf-export .page{box-shadow:none;width:100%;max-width:190mm;margin:0 auto;padding:0;break-inside:avoid;page-break-inside:avoid}
 body.pdf-export .hd{grid-template-columns:70px 1fr 1fr;gap:0 8px}
@@ -45,7 +55,8 @@ body.pdf-export .dir{margin-left:0;padding-top:27px}
 body.pdf-export .ttl{margin:10px 0 6px}
 body.pdf-export .sec{padding:2px 4px;margin:9px 0 7px}
 body.pdf-export .g{gap:7px 14px}
-body.pdf-export .pad canvas{height:60px}
+body.pdf-export .signature-box{height:60px}
+body.pdf-export .signature-controls .signature-name{display:none}
 body.pdf-export .cut{margin:14px 0 10px}
 body.pdf-export .cmp p{margin:12px 0}
 body.pdf-export .huella{width:95px;height:85px}
@@ -56,10 +67,11 @@ body.pdf-export .page{filter:grayscale(100%)}
  @page{size:letter portrait;margin:12mm}
  html,body{width:auto;background:#fff}
  body{font-size:12px;line-height:1.3}
- .bar,.clr{display:none}
+ .bar{display:none}
  .wrap{padding:0;overflow:visible}
  .page{box-shadow:none;width:100%;max-width:190mm;margin:0 auto;padding:0;break-inside:avoid;page-break-inside:avoid}
  .page{filter:grayscale(100%)}
+ .signature-controls .signature-name{display:none}
  .hd{grid-template-columns:70px 1fr 1fr;gap:0 8px}
  .logo,.ips,.dir{font-size:10px}
  .ips b.t{font-size:12px}
@@ -67,7 +79,7 @@ body.pdf-export .page{filter:grayscale(100%)}
  .ttl{margin:10px 0 6px}
  .sec{padding:2px 4px;margin:9px 0 7px}
  .g{gap:7px 14px}
- .pad canvas{height:60px}
+ .signature-box{height:60px}
  .cut{margin:14px 0 10px}
  .cmp p{margin:12px 0}
  .huella{width:95px;height:85px}
@@ -75,7 +87,7 @@ body.pdf-export .page{filter:grayscale(100%)}
  input,select{border-bottom-color:#999}
 }
 </style></head><body>
-<div class="bar"><strong>Hoja de admisión</strong><button id="descargar-pdf" onclick="descargarPDF()">Descargar PDF</button><button onclick="window.print()">Imprimir</button><button onclick="limpiar()">Limpiar todo</button></div>
+<div class="bar"><strong>Hoja de admisión</strong><button id="descargar-pdf" onclick="descargarPDF()">Descargar PDF</button><button onclick="window.print()">Imprimir</button><button onclick="limpiar()">Limpiar todo</button> <label for="estilo_firma">Estilo de firma:</label><select id="estilo_firma" class="signature-font" aria-label="Estilo global de firma"><option value="classic">Firma clásica</option><option value="elegant">Firma elegante</option><option value="casual">Firma casual</option></select></div>
 <div class="wrap"><div class="page">
 
 <div class="hd">
@@ -125,8 +137,8 @@ body.pdf-export .page{filter:grayscale(100%)}
 </div>
 
 <div class="g" style="margin-top:14px;align-items:start">
- <div class="pad s2" style="max-width:62%"><canvas></canvas><div class="cap"><input placeholder="Nombre del profesional"><input placeholder="CC" style="margin-top:2px"> <button class="clr">Borrar firma</button></div></div>
- <div class="pad"><canvas></canvas><div class="cap">Firma paciente <button class="clr">Borrar firma</button></div></div>
+ <div class="pad s2" style="max-width:62%"><div class="signature-box"><span class="signature-text doctor-signature" data-font="doctor"></span></div><div class="signature-controls"><input class="signature-name" placeholder="Nombre del profesional"><input placeholder="CC" style="margin-top:2px"></div></div>
+ <div class="pad"><div class="signature-box"><span class="signature-text patient-signature" data-font="classic"></span></div><div class="signature-controls"><input class="signature-name" placeholder="Nombre del paciente"></div><div class="cap">Firma paciente</div></div>
 </div>
 
 <div class="cut"></div>
@@ -141,7 +153,7 @@ body.pdf-export .page{filter:grayscale(100%)}
 <div class="cmp"><p>YO <input class="i auto" id="t_nom" style="width:260px" placeholder="Nombre completo">, IDENTIFICACION CON <span id="t_tipo">CEDULA DE CIUDADANIA</span> N° <input class="i auto" id="t_doc" style="width:130px">, CON LA ADMISIÓN N° <input class="i auto" id="t_adm" style="width:90px">, DECLARO BAJO MI PROPIA VOLUNTAD QUE LA I.P.S <b>IPS SOMID SAS COSTA</b>, ME PRESTO LOS SERVICIOS DE SALUD POR MI REQUERIDOS</p></div>
 
 <div class="g" style="margin-top:6px;align-items:end">
- <div class="pad s2" style="max-width:80%"><canvas></canvas><div class="cap">FIRMA DEL PACIENTE O REPRESENTANTE <button class="clr">Borrar firma</button></div>
+ <div class="pad s2" style="max-width:80%"><div class="signature-box"><span class="signature-text patient-signature" data-font="classic"></span></div><div class="signature-controls"><input class="signature-name" placeholder="Nombre del paciente o representante"></div><div class="cap">FIRMA DEL PACIENTE O REPRESENTANTE</div>
   <div class="f" style="margin-top:8px;max-width:200px"><label>C.C.</label><input class="auto" id="t_cc"></div></div>
  <div><div class="huella"></div><div class="cap" style="padding-left:28px">HUELLA</div></div>
 </div>
@@ -151,15 +163,16 @@ body.pdf-export .page{filter:grayscale(100%)}
 <script src="html2pdf.bundle.min.js"></script>
 <script>
 document.querySelectorAll('.pad').forEach(function(p){
- var c=p.querySelector('canvas'),x=c.getContext('2d'),d=false;
- function fit(){var r=c.getBoundingClientRect();c.width=r.width*2;c.height=r.height*2;x.scale(2,2);x.lineWidth=1.6;x.lineCap='round';x.strokeStyle='#123'}
- fit();
- function pt(e){var r=c.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
- c.addEventListener('pointerdown',function(e){d=true;c.setPointerCapture(e.pointerId);var q=pt(e);x.beginPath();x.moveTo(q[0],q[1])});
- c.addEventListener('pointermove',function(e){if(!d)return;var q=pt(e);x.lineTo(q[0],q[1]);x.stroke()});
- ['pointerup','pointercancel'].forEach(function(n){c.addEventListener(n,function(){d=false})});
- p.querySelector('.clr').onclick=function(){x.clearRect(0,0,c.width,c.height)};
+ var name=p.querySelector('.signature-name'),preview=p.querySelector('.signature-text');
+ function update(){preview.textContent=name.value.trim()}
+ name.addEventListener('input',update);
+ update();
 });
+function actualizarEstiloFirmas(){
+ document.querySelectorAll('.patient-signature').forEach(function(preview){preview.dataset.font=$('estilo_firma').value});
+}
+$('estilo_firma').addEventListener('change',actualizarEstiloFirmas);
+actualizarEstiloFirmas();
 var TIPOS={CC:'CEDULA DE CIUDADANIA',TI:'TARJETA DE IDENTIDAD',RC:'REGISTRO CIVIL',CE:'CEDULA DE EXTRANJERIA',PA:'PASAPORTE',PT:'PERMISO POR PROTECCION TEMPORAL'};
 function $(i){return document.getElementById(i)}
 function sync(){
@@ -202,8 +215,8 @@ async function descargarPDF(){
  }
 }
 function limpiar(){if(!confirm('¿Borrar todo lo escrito?'))return;
- document.querySelectorAll('input,select').forEach(function(i){i.value=''});
- document.querySelectorAll('.clr').forEach(function(b){b.click()});
+ document.querySelectorAll('input,select:not(#estilo_firma)').forEach(function(i){i.value=''});
+ document.querySelectorAll('.signature-name').forEach(function(i){i.dispatchEvent(new Event('input',{bubbles:true}))});
  document.querySelectorAll('.auto').forEach(function(t){t.dataset.m=''});sync()}
 </script>
 </body></html>

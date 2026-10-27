@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hoja de admisión de pacientes</title>
+<style>
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:#e9ecef;font:12px/1.35 Arial,Helvetica,sans-serif;color:#111}
+.bar{position:sticky;top:0;background:#1d3b6e;color:#fff;padding:8px 12px;display:flex;gap:8px;align-items:center;z-index:5}
+.bar button{font:inherit;padding:6px 12px;border:0;border-radius:4px;background:#fff;color:#1d3b6e;cursor:pointer}
+.wrap{overflow-x:auto;padding:12px}
+.page{width:780px;margin:0 auto;background:#fff;padding:22px 28px;box-shadow:0 1px 4px #0003}
+.hd{display:grid;grid-template-columns:80px 1fr 1fr;gap:0 10px;align-items:start}
+.logo{align-self:stretch;display:flex;align-items:center;justify-content:center}
+.logo img{display:block;width:95%;height:auto;max-height:42px;object-fit:contain;object-position:center}
+.ips{font-size:11px;line-height:1.3}
+.ips b.t{display:block;font-size:13px;color:#1d3b6e}
+.dir{font-size:11px;padding-top:30px;margin-left:50px}
+.ttl{font-weight:bold;color:#1d3b6e;margin:10px 0 4px}
+.sec{background:#dfe7f1;border-top:1px solid #1d3b6e;border-bottom:1px solid #1d3b6e;font-weight:bold;color:#1d3b6e;padding:2px 4px;margin:8px 0 6px}
+.g{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:5px 18px;align-items:end}
+.s2{grid-column:span 2}
+.f{display:flex;gap:4px;align-items:baseline;min-width:0}
+.f.identificacion select{flex:0 0 48px;width:48px}
+.f.identificacion input{flex:1 1 0;width:0}
+.f label{font-weight:bold;white-space:nowrap}
+input,select{font:inherit;border:0;border-bottom:1px solid #8aa;background:transparent;width:100%;min-width:0;padding:1px 2px;color:#111}
+input:focus,select:focus{outline:2px solid #2b6cb0;background:#f3f8ff}
+.pad canvas{display:block;width:100%;height:60px;border-bottom:1px solid #111;touch-action:none;background:#fff}
+.pad .cap{font-size:11px;padding-top:2px}
+.clr{font-size:10px;border:0;background:none;color:#2b6cb0;cursor:pointer;padding:0}
+.cut{border-top:1.5px dashed #444;margin:16px 0 8px}
+.cmp p{margin:8px 0}
+.cmp input.i{display:inline-block;width:auto}
+.huella{width:95px;height:85px;border:1px solid #111}
+.foot{font-size:12px;margin-top:12px}
+body.pdf-export{width:auto;background:#fff;font-size:12px;line-height:1.3}
+body.pdf-export .bar,body.pdf-export .clr{display:none}
+body.pdf-export .wrap{padding:0;overflow:visible}
+body.pdf-export .page{box-shadow:none;width:100%;max-width:190mm;margin:0 auto;padding:0;break-inside:avoid;page-break-inside:avoid}
+body.pdf-export .hd{grid-template-columns:70px 1fr 1fr;gap:0 8px}
+body.pdf-export .logo,body.pdf-export .ips,body.pdf-export .dir{font-size:10px}
+body.pdf-export .ips b.t{font-size:12px}
+body.pdf-export .dir{margin-left:0;padding-top:27px}
+body.pdf-export .ttl{margin:10px 0 6px}
+body.pdf-export .sec{padding:2px 4px;margin:9px 0 7px}
+body.pdf-export .g{gap:7px 14px}
+body.pdf-export .pad canvas{height:60px}
+body.pdf-export .cut{margin:14px 0 10px}
+body.pdf-export .cmp p{margin:12px 0}
+body.pdf-export .huella{width:95px;height:85px}
+body.pdf-export .foot{font-size:10px;line-height:1.3;margin-top:12px}
+body.pdf-export input,body.pdf-export select{border-bottom-color:#999}
+body.pdf-export .page{filter:grayscale(100%)}
+@media print{
+ @page{size:letter portrait;margin:12mm}
+ html,body{width:auto;background:#fff}
+ body{font-size:12px;line-height:1.3}
+ .bar,.clr{display:none}
+ .wrap{padding:0;overflow:visible}
+ .page{box-shadow:none;width:100%;max-width:190mm;margin:0 auto;padding:0;break-inside:avoid;page-break-inside:avoid}
+ .page{filter:grayscale(100%)}
+ .hd{grid-template-columns:70px 1fr 1fr;gap:0 8px}
+ .logo,.ips,.dir{font-size:10px}
+ .ips b.t{font-size:12px}
+ .dir{margin-left:0;padding-top:27px}
+ .ttl{margin:10px 0 6px}
+ .sec{padding:2px 4px;margin:9px 0 7px}
+ .g{gap:7px 14px}
+ .pad canvas{height:60px}
+ .cut{margin:14px 0 10px}
+ .cmp p{margin:12px 0}
+ .huella{width:95px;height:85px}
+ .foot{font-size:10px;line-height:1.3;margin-top:12px}
+ input,select{border-bottom-color:#999}
+}
+</style></head><body>
+<div class="bar"><strong>Hoja de admisión</strong><button id="descargar-pdf" onclick="descargarPDF()">Descargar PDF</button><button onclick="window.print()">Imprimir</button><button onclick="limpiar()">Limpiar todo</button></div>
+<div class="wrap"><div class="page">
+
+<div class="hd">
+ <div class="logo"><img src="img/logo_ips.png" alt="ClínicaSomid"></div>
+ <div class="ips"><b class="t">IPS SOMID SAS COSTA</b><b>Código IPS:</b> 702210179401<br><b>NIT:</b> 900324225-6<br><b>Teléfono:</b> 300-6227068</div>
+ <div class="dir"><b>Dirección:</b> CR 10 14-46 SEC ISLA DE GALLINAZO</div>
+</div>
+
+<div class="ttl">HOJA DE ADMISIÓN DE PACIENTES</div>
+<div class="g">
+ <div class="f"><label>N° de admisión:</label><input id="s_adm"></div>
+ <div class="f"><label>Fecha admisión:</label><input id="fecha_admision" type="date" readonly></div>
+ <div class="f"><label>Hora admisión:</label><input id="hora_admision" type="time" readonly></div>
+</div>
+
+<div class="sec">DATOS GENERALES DEL PACIENTE</div>
+<div class="g">
+ <div class="f s2"><label>Nombre:</label><input id="s_nom"></div>
+ <div class="f identificacion"><label>Identificación:</label><select id="s_tipo"><option>CC</option><option>TI</option><option>RC</option><option>CE</option><option>PA</option><option>PT</option></select><input id="s_doc"></div>
+
+ <div class="f s2"><label>Fecha Nacimiento:</label><input type="date" style="width:160px"></div>
+ <div class="f"><label>Edad:</label><input placeholder="años - meses - días"></div>
+
+ <div class="f"><label>Dirección:</label><input></div>
+ <div class="f"><label>Ciudad:</label><input></div>
+ <div class="f"><label>Departamento:</label><input></div>
+
+ <div class="f"><label>Nivel:</label><input></div>
+ <div class="f"><label>Zona:</label><select><option></option><option>URBANA</option><option>RURAL</option></select></div>
+ <div class="f"><label>Tipo Población:</label><input></div>
+
+ <div class="f"><label>Tipo Afiliación:</label><select><option></option><option>COTIZANTE</option><option>BENEFICIARIO</option><option>SUBSIDIADO</option><option>PARTICULAR</option></select></div>
+ <div class="f"><label>Sexo:</label><select><option></option><option>MASCULINO</option><option>FEMENINO</option></select></div>
+ <div class="f"><label>Grupo Étnico:</label><input></div>
+
+ <div class="f"><label>Email:</label><input type="email"></div>
+ <div class="f"><label>Teléfono:</label><input type="tel"></div>
+ <div class="f"><label>Discapacidad:</label><input></div>
+
+ <div class="f s2"><label>Ocupación:</label><input></div>
+ <div class="f"><label>Estado Civil:</label><select><option></option><option>SOLTERO(A)</option><option>CASADO(A)</option><option>UNIÓN LIBRE</option><option>SEPARADO(A)</option><option>VIUDO(A)</option></select></div>
+
+ <div class="f s2"><label>Entidad:</label><input></div><div></div>
+ <div class="f s2"><label>Contrato:</label><input></div><div></div>
+ <div class="f s2"><label>Centro de servicios:</label><input></div>
+ <div class="f"><label>Profesional:</label><input></div>
+</div>
+
+<div class="g" style="margin-top:14px;align-items:start">
+ <div class="pad s2" style="max-width:62%"><canvas></canvas><div class="cap"><input placeholder="Nombre del profesional"><input placeholder="CC" style="margin-top:2px"> <button class="clr">Borrar firma</button></div></div>
+ <div class="pad"><canvas></canvas><div class="cap">Firma paciente <button class="clr">Borrar firma</button></div></div>
+</div>
+
+<div class="cut"></div>
+
+<div class="hd">
+ <div class="logo"><img src="img/logo_ips.png" alt="ClínicaSomid"></div>
+ <div class="ips"><b class="t">IPS SOMID SAS COSTA</b><b>Código IPS:</b> 702210179401<br><b>NIT:</b> 900324225-6<br><b>Teléfono:</b> 300-6227068</div>
+ <div class="dir"><b>Dirección:</b> CR 10 14-46 SEC ISLA DE GALLINAZO</div>
+</div>
+
+<div class="ttl">COMPROBANTE DE RECIBIDO USUARIO</div>
+<div class="cmp"><p>YO <input class="i auto" id="t_nom" style="width:260px" placeholder="Nombre completo">, IDENTIFICACION CON <span id="t_tipo">CEDULA DE CIUDADANIA</span> N° <input class="i auto" id="t_doc" style="width:130px">, CON LA ADMISIÓN N° <input class="i auto" id="t_adm" style="width:90px">, DECLARO BAJO MI PROPIA VOLUNTAD QUE LA I.P.S <b>IPS SOMID SAS COSTA</b>, ME PRESTO LOS SERVICIOS DE SALUD POR MI REQUERIDOS</p></div>
+
+<div class="g" style="margin-top:6px;align-items:end">
+ <div class="pad s2" style="max-width:80%"><canvas></canvas><div class="cap">FIRMA DEL PACIENTE O REPRESENTANTE <button class="clr">Borrar firma</button></div>
+  <div class="f" style="margin-top:8px;max-width:200px"><label>C.C.</label><input class="auto" id="t_cc"></div></div>
+ <div><div class="huella"></div><div class="cap" style="padding-left:28px">HUELLA</div></div>
+</div>
+
+<p class="foot">SE EXPIDE ESTE FORMATO PARA DAR CUMPLIMIENTO A LO NORMALIZADO EN LA RESOLUCION 3047 DE 2008, ANEXO TECNICO N° INCISO A, NUMERAL 8 “COMPROBANTE DE RECIBO DE USUARIO”</p>
+</div></div>
+<script src="html2pdf.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.pad').forEach(function(p){
+ var c=p.querySelector('canvas'),x=c.getContext('2d'),d=false;
+ function fit(){var r=c.getBoundingClientRect();c.width=r.width*2;c.height=r.height*2;x.scale(2,2);x.lineWidth=1.6;x.lineCap='round';x.strokeStyle='#123'}
+ fit();
+ function pt(e){var r=c.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+ c.addEventListener('pointerdown',function(e){d=true;c.setPointerCapture(e.pointerId);var q=pt(e);x.beginPath();x.moveTo(q[0],q[1])});
+ c.addEventListener('pointermove',function(e){if(!d)return;var q=pt(e);x.lineTo(q[0],q[1]);x.stroke()});
+ ['pointerup','pointercancel'].forEach(function(n){c.addEventListener(n,function(){d=false})});
+ p.querySelector('.clr').onclick=function(){x.clearRect(0,0,c.width,c.height)};
+});
+var TIPOS={CC:'CEDULA DE CIUDADANIA',TI:'TARJETA DE IDENTIDAD',RC:'REGISTRO CIVIL',CE:'CEDULA DE EXTRANJERIA',PA:'PASAPORTE',PT:'PERMISO POR PROTECCION TEMPORAL'};
+function $(i){return document.getElementById(i)}
+function actualizarFechaHora(){
+ var ahora=new Date();
+ $('fecha_admision').value=[ahora.getFullYear(),String(ahora.getMonth()+1).padStart(2,'0'),String(ahora.getDate()).padStart(2,'0')].join('-');
+ $('hora_admision').value=[String(ahora.getHours()).padStart(2,'0'),String(ahora.getMinutes()).padStart(2,'0')].join(':');
+}
+actualizarFechaHora();
+setInterval(actualizarFechaHora,30000);
+function sync(){
+ var m=[['s_nom','t_nom'],['s_doc','t_doc'],['s_doc','t_cc'],['s_adm','t_adm']];
+ m.forEach(function(p){var t=$(p[1]);if(!t.dataset.m)t.value=$(p[0]).value});
+ $('t_tipo').textContent=TIPOS[$('s_tipo').value]||'';
+ $('t_cc').previousElementSibling.textContent=$('s_tipo').value+'.';
+}
+['s_nom','s_doc','s_adm','s_tipo'].forEach(function(i){$(i).addEventListener('input',sync);$(i).addEventListener('change',sync)});
+document.querySelectorAll('.auto').forEach(function(t){t.addEventListener('input',function(){t.dataset.m=t.value?'1':''})});
+sync();
+async function descargarPDF(){
+ var b=$('descargar-pdf'),p=document.querySelector('.page'),style=p.getAttribute('style');
+ b.disabled=true;b.textContent='Generando PDF...';
+ try{
+  if(typeof html2pdf!=='function')throw new Error('No se pudo cargar el generador de PDF local.');
+  document.body.classList.add('pdf-export');
+  p.style.width='190mm';p.style.maxWidth='190mm';p.style.margin='0 auto';p.style.padding='0';p.style.boxShadow='none';
+  var adm=$('s_adm').value.trim(),sufijo=adm?'-'+adm.replace(/[^\w-]/g,'-'):'';
+  await html2pdf().set({
+   margin:12,
+   filename:'hoja-admision'+sufijo+'.pdf',
+   image:{type:'jpeg',quality:.98},
+   html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,scrollX:0,scrollY:0},
+   jsPDF:{unit:'mm',format:'letter',orientation:'portrait'}
+  }).from(p).toCanvas().then(function(){
+   var canvas=this.prop.canvas,context=canvas.getContext('2d'),image=context.getImageData(0,0,canvas.width,canvas.height),pixels=image.data;
+   for(var i=0;i<pixels.length;i+=4){
+    var gray=Math.round(pixels[i]*.299+pixels[i+1]*.587+pixels[i+2]*.114);
+    pixels[i]=gray;pixels[i+1]=gray;pixels[i+2]=gray;
+   }
+   context.putImageData(image,0,0);
+  }).toPdf().save();
+ }catch(e){
+  alert('No se pudo generar el PDF. '+(e instanceof Error?e.message:String(e)));
+ }finally{
+  if(style===null)p.removeAttribute('style');else p.setAttribute('style',style);
+  document.body.classList.remove('pdf-export');
+  b.disabled=false;b.textContent='Descargar PDF';
+ }
+}
+function limpiar(){if(!confirm('¿Borrar todo lo escrito?'))return;
+ document.querySelectorAll('input:not([readonly]),select').forEach(function(i){i.value=''});
+ actualizarFechaHora();
+ document.querySelectorAll('.clr').forEach(function(b){b.click()});
+ document.querySelectorAll('.auto').forEach(function(t){t.dataset.m=''});sync()}
+</script>
+</body></html>
